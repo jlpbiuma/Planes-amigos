@@ -26,6 +26,8 @@ export const translations = {
     calendar: "Calendar",
     myEvents: "My Events",
     todaysEvents: "Today's Events",
+    today: "Today",
+    noEventsToday: "No events today",
     noEventsJoined: "You haven't joined any events yet",
     createOrJoinEvents: "Create or join events to see them here",
     
@@ -147,6 +149,8 @@ export const translations = {
     calendar: "Calendario",
     myEvents: "Mis Eventos",
     todaysEvents: "Eventos de Hoy",
+    today: "Hoy",
+    noEventsToday: "No hay eventos hoy",
     noEventsJoined: "Aún no te has unido a eventos",
     createOrJoinEvents: "Crea o únete a eventos para verlos aquí",
     

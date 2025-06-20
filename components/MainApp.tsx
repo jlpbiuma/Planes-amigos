@@ -135,10 +135,10 @@ export function MainApp() {
     if (!user) {
         return (
             <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-blue-50 to-purple-50">
-                <div className="w-full max-w-md">
+                <div className="w-full max-w-sm mx-auto">
                     <div className="text-center mb-8">
-                        <h1 className="text-3xl font-bold text-foreground mb-2">{tc('appName')}</h1>
-                        <p className="text-muted-foreground">{tc('appDescription')}</p>
+                        <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">{tc('appName')}</h1>
+                        <p className="text-muted-foreground text-sm">{tc('appDescription')}</p>
                     </div>
 
                     {showLogin ? (
@@ -154,24 +154,27 @@ export function MainApp() {
     return (
         <div className="min-h-screen bg-background">
             {/* Header */}
-            <header className="border-b bg-card p-4">
-                <div className="max-w-md mx-auto flex items-center justify-between">
-                    <h1 className="text-xl font-semibold">{tc('appName')}</h1>
-                    <div className="flex items-center space-x-2">
-                        <div className="flex items-center space-x-2">
+            <header className="sticky top-0 z-50 border-b bg-card p-4 backdrop-blur-sm bg-card/95">
+                <div className="w-full max-w-none px-2 flex items-center justify-between">
+                    <h1 className="text-lg sm:text-xl font-semibold truncate">{tc('appName')}</h1>
+                    <div className="flex items-center space-x-1">
+                        <div className="hidden sm:flex items-center space-x-2 mr-2">
                             <div className={`w-6 h-6 rounded-full ${user.color}`} />
-                            <span className="text-sm text-muted-foreground">{tc('hi')}, {user.name}!</span>
+                            <span className="text-sm text-muted-foreground truncate max-w-20">{tc('hi')}, {user.name}!</span>
                         </div>
-                        <Button variant="ghost" size="icon" onClick={() => setShowProfile(true)}>
+                        <div className="sm:hidden flex items-center mr-2">
+                            <div className={`w-6 h-6 rounded-full ${user.color}`} />
+                        </div>
+                        <Button variant="ghost" size="icon" onClick={() => setShowProfile(true)} className="h-8 w-8">
                             <Settings className="h-4 w-4" />
                         </Button>
-                        <Button variant="ghost" size="icon" onClick={toggleLanguage} title={language === 'es' ? 'Switch to English' : 'Cambiar a Español'}>
+                        <Button variant="ghost" size="icon" onClick={toggleLanguage} title={language === 'es' ? 'Switch to English' : 'Cambiar a Español'} className="h-8 w-8">
                             <Languages className="h-4 w-4" />
                         </Button>
-                        <Button variant="ghost" size="icon" onClick={toggleTheme}>
+                        <Button variant="ghost" size="icon" onClick={toggleTheme} className="h-8 w-8">
                             {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
                         </Button>
-                        <Button variant="ghost" size="icon" onClick={handleLogout}>
+                        <Button variant="ghost" size="icon" onClick={handleLogout} className="h-8 w-8">
                             <LogOut className="h-4 w-4" />
                         </Button>
                     </div>
@@ -179,9 +182,9 @@ export function MainApp() {
             </header>
 
             {/* Main Content */}
-            <main className="max-w-md mx-auto">
-                <Tabs defaultValue="calendar" className="w-full">
-                    <TabsList className="grid w-full grid-cols-2 m-4">
+            <main className="w-full p-4">
+                <Tabs defaultValue="calendar" className="w-full max-w-md mx-auto">
+                    <TabsList className="grid w-full grid-cols-2 mb-4">
                         <TabsTrigger value="calendar" className="flex items-center space-x-2">
                             <CalendarIcon className="h-4 w-4" />
                             <span>{tc('calendar')}</span>
@@ -202,7 +205,7 @@ export function MainApp() {
                     </TabsContent>
 
                     <TabsContent value="my-events">
-                        <div className="p-4">
+                        <div>
                             <h2 className="text-lg font-semibold mb-4">{tc('myEvents')}</h2>
 
                             {isLoadingEvents ? (
@@ -242,20 +245,20 @@ export function MainApp() {
                                                 </div>
                                             </div>
 
-                                            {/* Participant color bubbles */}
-                                            <div className="flex items-center space-x-1 mt-2">
-                                                {event.participants.slice(0, 5).map((participant) => (
-                                                    <div
-                                                        key={participant.id}
-                                                        className={`w-4 h-4 rounded-full ${participant.color} border border-background`}
-                                                        title={participant.name}
-                                                    />
-                                                ))}
-                                                {event.participant_count > 5 && (
-                                                    <span className="text-xs text-muted-foreground ml-1">
-                                                        +{event.participant_count - 5}
-                                                    </span>
-                                                )}
+                                            {/* Participant list with names */}
+                                            <div className="mt-3 space-y-1">
+                                                <p className="text-xs text-muted-foreground font-medium">{tc('participants')}:</p>
+                                                <div className="flex flex-wrap gap-2">
+                                                    {event.participants.map((participant) => (
+                                                        <div
+                                                            key={participant.id}
+                                                            className="flex items-center space-x-1 bg-muted rounded-full px-2 py-1"
+                                                        >
+                                                            <div className={`w-3 h-3 rounded-full ${participant.color}`} />
+                                                            <span className="text-xs">{participant.name}</span>
+                                                        </div>
+                                                    ))}
+                                                </div>
                                             </div>
                                         </div>
                                     ))}

@@ -76,9 +76,9 @@ export function Calendar({ events, onEventCreate, onEventJoin, currentUserId }: 
     }
 
     return (
-        <div className="p-4 max-w-md mx-auto">
+        <div className="w-full">
             {/* Calendar Header */}
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center justify-between mb-6 px-2">
                 <Button variant="ghost" size="icon" onClick={prevMonth}>
                     <ChevronLeft className="h-4 w-4" />
                 </Button>
@@ -91,7 +91,7 @@ export function Calendar({ events, onEventCreate, onEventJoin, currentUserId }: 
             </div>
 
             {/* Calendar Grid */}
-            <div className="grid grid-cols-7 gap-1 mb-4">
+            <div className="grid grid-cols-7 gap-1 mb-4 px-2">
                 {/* Week day headers */}
                 {tc('daysOfWeek').map((day: string, index: number) => (
                     <div key={index} className="text-center text-sm font-medium text-muted-foreground p-2">
@@ -137,28 +137,53 @@ export function Calendar({ events, onEventCreate, onEventJoin, currentUserId }: 
             </div>
 
             {/* Today's Events */}
-            <div className="space-y-2">
+            <div className="space-y-2 px-2">
                 <h3 className="text-sm font-medium text-muted-foreground">{tc('todaysEvents')}</h3>
-                {getEventsForDay(new Date()).map((event) => (
-                    <Card
-                        key={event.id}
-                        className="cursor-pointer hover:shadow-md transition-shadow"
-                        onClick={() => handleEventClick(event)}
-                    >
-                        <CardContent className="p-3">
-                            <div className="flex items-center justify-between">
-                                <div className="flex items-center space-x-2">
-                                    <div className={`w-3 h-3 rounded-full ${event.color}`} />
-                                    <span className="font-medium">{event.title}</span>
+                {getEventsForDay(new Date()).length === 0 ? (
+                    <div className="text-center py-4">
+                        <p className="text-sm text-muted-foreground">{tc('noEventsToday')}</p>
+                    </div>
+                ) : (
+                    <div className="space-y-3">
+                        {getEventsForDay(new Date()).map((event) => (
+                            <div key={event.id} className="border rounded-lg p-3 cursor-pointer hover:shadow-md transition-shadow" onClick={() => handleEventClick(event)}>
+                                <div className="flex items-center justify-between">
+                                    <div className="flex items-center space-x-3">
+                                        <div className={`w-4 h-4 rounded-full ${event.color}`} />
+                                        <div>
+                                            <h3 className="font-medium">{event.title}</h3>
+                                            <p className="text-sm text-muted-foreground">
+                                                {tc('today')}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div className="text-sm text-muted-foreground flex items-center space-x-1">
+                                        <Users className="h-3 w-3" />
+                                        <span>
+                                            {event.participant_count} {event.participant_count === 1 ? tc('participant') : tc('participants')}
+                                        </span>
+                                    </div>
                                 </div>
-                                <div className="flex items-center space-x-1 text-sm text-muted-foreground">
-                                    <Users className="h-3 w-3" />
-                                    <span>{event.participant_count}</span>
+
+                                {/* Participant list with names */}
+                                <div className="mt-3 space-y-1">
+                                    <p className="text-xs text-muted-foreground font-medium">{tc('participants')}:</p>
+                                    <div className="flex flex-wrap gap-2">
+                                        {event.participants.map((participant) => (
+                                            <div
+                                                key={participant.id}
+                                                className="flex items-center space-x-1 bg-muted rounded-full px-2 py-1"
+                                            >
+                                                <div className={`w-3 h-3 rounded-full ${participant.color}`} />
+                                                <span className="text-xs">{participant.name}</span>
+                                            </div>
+                                        ))}
+                                    </div>
                                 </div>
                             </div>
-                        </CardContent>
-                    </Card>
-                ))}
+                        ))}
+                    </div>
+                )}
             </div>
 
             {/* Create Event Dialog */}
@@ -180,9 +205,9 @@ export function Calendar({ events, onEventCreate, onEventJoin, currentUserId }: 
 
             {/* Event Details Dialog */}
             <Dialog open={!!selectedEvent} onOpenChange={() => setSelectedEvent(null)}>
-                <DialogContent>
+                <DialogContent className="max-w-sm sm:max-w-lg">
                     <DialogHeader>
-                        <DialogTitle>{selectedEvent?.title}</DialogTitle>
+                        <DialogTitle className="text-left text-lg font-semibold pr-8">{selectedEvent?.title}</DialogTitle>
                     </DialogHeader>
                     {selectedEvent && (
                         <EventDetails
