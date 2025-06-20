@@ -6,7 +6,6 @@ import { Input } from '@/components/ui/input'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
 import { tc } from '@/lib/translations'
-import { DialogHeader, DialogTitle } from '@/components/ui/dialog'
 
 interface CreateEventFormProps {
     selectedDate: string
@@ -30,9 +29,6 @@ export function CreateEventForm({ selectedDate, onEventCreate, onCancel }: Creat
 
     return (
         <form onSubmit={handleSubmit} className="space-y-4">
-            <DialogHeader>
-                <DialogTitle>{tc('createNewEvent')}</DialogTitle>
-            </DialogHeader>
             <div className="space-y-4">
                 <div className="space-y-2">
                     <label htmlFor="title" className="text-sm font-medium">

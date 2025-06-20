@@ -98,6 +98,17 @@ export const translations = {
     // UI Elements
     hi: "Hi",
     logout: "Logout",
+    selectColor: "Select Color",
+    profile: "Profile",
+    updateProfile: "Update Profile",
+    changePassword: "Change Password",
+    currentPassword: "Current Password",
+    newPassword: "New Password",
+    confirmNewPassword: "Confirm New Password",
+    updating: "Updating...",
+    profileUpdated: "Profile updated successfully!",
+    passwordUpdated: "Password updated successfully! Please log in again.",
+    updateFailed: "Update failed",
     
     // Days of week
     daysOfWeek: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
@@ -208,6 +219,17 @@ export const translations = {
     // UI Elements
     hi: "¡Hola",
     logout: "Cerrar Sesión",
+    selectColor: "Seleccionar Color",
+    profile: "Perfil",
+    updateProfile: "Actualizar Perfil",
+    changePassword: "Cambiar Contraseña",
+    currentPassword: "Contraseña Actual",
+    newPassword: "Nueva Contraseña",
+    confirmNewPassword: "Confirmar Nueva Contraseña",
+    updating: "Actualizando...",
+    profileUpdated: "¡Perfil actualizado exitosamente!",
+    passwordUpdated: "¡Contraseña actualizada exitosamente! Por favor inicia sesión nuevamente.",
+    updateFailed: "Error al actualizar",
     
     // Days of week
     daysOfWeek: ["Lun", "Mar", "Mié", "Jue", "Vie", "Sáb", "Dom"],

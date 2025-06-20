@@ -3,6 +3,7 @@ CREATE TABLE users (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   name TEXT NOT NULL UNIQUE,
   password_hash TEXT NOT NULL,
+  color TEXT NOT NULL DEFAULT 'bg-blue-500',
   created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 

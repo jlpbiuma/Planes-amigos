@@ -4,6 +4,7 @@ import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { ColorPicker } from '@/components/ui/color-picker'
 import { registerUser } from '@/lib/auth'
 import { useAuth } from '@/contexts/AuthContext'
 import { tc } from '@/lib/translations'
@@ -23,6 +24,7 @@ export function RegisterForm({ onToggleForm }: RegisterFormProps) {
     const [name, setName] = useState('')
     const [password, setPassword] = useState('')
     const [confirmPassword, setConfirmPassword] = useState('')
+    const [selectedColor, setSelectedColor] = useState('bg-blue-500')
     const [isLoading, setIsLoading] = useState(false)
     const { login } = useAuth()
     const { toast } = useToast()
@@ -50,7 +52,7 @@ export function RegisterForm({ onToggleForm }: RegisterFormProps) {
 
         setIsLoading(true)
 
-        const result = await registerUser(name, password)
+        const result = await registerUser(name, password, selectedColor)
 
         if (result.success && result.user) {
             login(result.user)
@@ -118,6 +120,11 @@ export function RegisterForm({ onToggleForm }: RegisterFormProps) {
                             required
                         />
                     </div>
+                    <ColorPicker
+                        selectedColor={selectedColor}
+                        onColorChange={setSelectedColor}
+                        label={tc('selectColor')}
+                    />
                     <Button type="submit" className="w-full" disabled={isLoading}>
                         {isLoading ? tc('creatingAccount') : tc('signUp')}
                     </Button>

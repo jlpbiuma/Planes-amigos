@@ -63,13 +63,41 @@ export function EventDetails({ event, onJoin, currentUserId }: EventDetailsProps
                     </span>
                 </div>
 
+                {/* Participant Color Bubbles */}
+                <div className="flex items-center space-x-2">
+                    <div className="flex -space-x-1">
+                        {event.participants.slice(0, 5).map((participant) => (
+                            <div
+                                key={participant.id}
+                                className={`w-8 h-8 rounded-full ${participant.color} border-2 border-background flex items-center justify-center`}
+                                title={participant.name}
+                            >
+                                <span className="text-xs font-medium text-white">
+                                    {participant.name.charAt(0).toUpperCase()}
+                                </span>
+                            </div>
+                        ))}
+                        {event.participants.length > 5 && (
+                            <div className="w-8 h-8 rounded-full bg-muted border-2 border-background flex items-center justify-center">
+                                <span className="text-xs font-medium text-muted-foreground">
+                                    +{event.participants.length - 5}
+                                </span>
+                            </div>
+                        )}
+                    </div>
+                </div>
+
+                {/* Participant List */}
                 <div className="space-y-1 max-h-32 overflow-y-auto">
                     {event.participants.map((participant) => (
                         <div
                             key={participant.id}
                             className="flex items-center justify-between p-2 bg-muted rounded-md"
                         >
-                            <span className="text-sm">{participant.name}</span>
+                            <div className="flex items-center space-x-2">
+                                <div className={`w-4 h-4 rounded-full ${participant.color}`} />
+                                <span className="text-sm">{participant.name}</span>
+                            </div>
                             {participant.id === event.creator_id && (
                                 <span className="text-xs bg-primary text-primary-foreground px-2 py-1 rounded">
                                     {tc('creator')}

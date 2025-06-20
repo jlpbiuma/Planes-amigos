@@ -7,10 +7,11 @@ import { RegisterForm } from '@/components/auth/RegisterForm'
 import { Calendar, Event } from '@/components/calendar/Calendar'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Button } from '@/components/ui/button'
-import { LogOut, Calendar as CalendarIcon, User, Moon, Sun, Languages } from 'lucide-react'
+import { LogOut, Calendar as CalendarIcon, User, Moon, Sun, Languages, Settings } from 'lucide-react'
 import { createEvent, joinEvent, getAllEvents, getUserEvents } from '@/lib/events'
 import { useTheme } from '@/contexts/ThemeContext'
 import { useLanguage } from '@/contexts/LanguageContext'
+import { UserProfile } from '@/components/profile/UserProfile'
 import { tc } from '@/lib/translations'
 
 // Simple toast implementation for now
@@ -28,6 +29,7 @@ export function MainApp() {
     const [allEvents, setAllEvents] = useState<Event[]>([])
     const [userEvents, setUserEvents] = useState<Event[]>([])
     const [isLoadingEvents, setIsLoadingEvents] = useState(false)
+    const [showProfile, setShowProfile] = useState(false)
     const { toast } = useToast()
 
     useEffect(() => {
@@ -156,7 +158,13 @@ export function MainApp() {
                 <div className="max-w-md mx-auto flex items-center justify-between">
                     <h1 className="text-xl font-semibold">{tc('appName')}</h1>
                     <div className="flex items-center space-x-2">
-                        <span className="text-sm text-muted-foreground">{tc('hi')}, {user.name}!</span>
+                        <div className="flex items-center space-x-2">
+                            <div className={`w-6 h-6 rounded-full ${user.color}`} />
+                            <span className="text-sm text-muted-foreground">{tc('hi')}, {user.name}!</span>
+                        </div>
+                        <Button variant="ghost" size="icon" onClick={() => setShowProfile(true)}>
+                            <Settings className="h-4 w-4" />
+                        </Button>
                         <Button variant="ghost" size="icon" onClick={toggleLanguage} title={language === 'es' ? 'Switch to English' : 'Cambiar a Español'}>
                             <Languages className="h-4 w-4" />
                         </Button>
@@ -233,6 +241,22 @@ export function MainApp() {
                                                     </span>
                                                 </div>
                                             </div>
+
+                                            {/* Participant color bubbles */}
+                                            <div className="flex items-center space-x-1 mt-2">
+                                                {event.participants.slice(0, 5).map((participant) => (
+                                                    <div
+                                                        key={participant.id}
+                                                        className={`w-4 h-4 rounded-full ${participant.color} border border-background`}
+                                                        title={participant.name}
+                                                    />
+                                                ))}
+                                                {event.participant_count > 5 && (
+                                                    <span className="text-xs text-muted-foreground ml-1">
+                                                        +{event.participant_count - 5}
+                                                    </span>
+                                                )}
+                                            </div>
                                         </div>
                                     ))}
                                 </div>
@@ -241,6 +265,14 @@ export function MainApp() {
                     </TabsContent>
                 </Tabs>
             </main>
+
+            {/* User Profile Dialog */}
+            {showProfile && (
+                <UserProfile
+                    isOpen={showProfile}
+                    onClose={() => setShowProfile(false)}
+                />
+            )}
         </div>
     )
 } 

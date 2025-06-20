@@ -20,13 +20,13 @@ const useToast = () => ({
 })
 
 interface InvitePageProps {
-    params: {
+    params: Promise<{
         eventId: string
-    }
+    }>
 }
 
 export default function InvitePage({ params }: InvitePageProps) {
-    const { eventId } = params
+    const [eventId, setEventId] = useState<string>('')
     const { user, isLoading: authLoading } = useAuth()
     const router = useRouter()
     const { toast } = useToast()
@@ -35,10 +35,20 @@ export default function InvitePage({ params }: InvitePageProps) {
     const [isJoining, setIsJoining] = useState(false)
 
     useEffect(() => {
-        loadEvent()
+        params.then(({ eventId }) => {
+            setEventId(eventId)
+        })
+    }, [params])
+
+    useEffect(() => {
+        if (eventId) {
+            loadEvent()
+        }
     }, [eventId])
 
     const loadEvent = async () => {
+        if (!eventId) return
+
         setIsLoading(true)
         const eventData = await getEventWithParticipants(eventId)
         setEvent(eventData)

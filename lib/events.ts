@@ -126,7 +126,8 @@ export async function getEventWithParticipants(eventId: string): Promise<Event |
         user_id,
         users (
           id,
-          name
+          name,
+          color
         )
       `)
       .eq('event_id', eventId)
@@ -142,7 +143,8 @@ export async function getEventWithParticipants(eventId: string): Promise<Event |
 
     const participantList = participants?.map(p => ({
       id: (p as any).users?.id || '',
-      name: (p as any).users?.name || 'Unknown'
+      name: (p as any).users?.name || 'Unknown',
+      color: (p as any).users?.color || 'bg-gray-500'
     })) || []
 
     return {

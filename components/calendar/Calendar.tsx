@@ -18,7 +18,7 @@ export interface Event {
     color: string
     creator_id: string
     participant_count: number
-    participants: Array<{ id: string; name: string }>
+    participants: Array<{ id: string; name: string; color: string }>
 }
 
 interface CalendarProps {
