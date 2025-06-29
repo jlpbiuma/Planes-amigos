@@ -36,29 +36,6 @@ export function RegisterForm({ onToggleForm }: RegisterFormProps) {
             return
         }
 
-        if (password.length < 6) {
-            toast({
-                title: t('passwordTooShort'),
-                description: t('passwordMinLength'),
-                variant: "destructive",
-            })
-            return
-        }
-
-        // Check for basic password security (uppercase, lowercase, number)
-        const hasUpperCase = /[A-Z]/.test(password)
-        const hasLowerCase = /[a-z]/.test(password)
-        const hasNumbers = /\d/.test(password)
-
-        if (!hasUpperCase || !hasLowerCase || !hasNumbers || password.length < 8) {
-            toast({
-                title: t('passwordNotSecure'),
-                description: t('passwordSecurityRequirements'),
-                variant: "destructive",
-            })
-            return
-        }
-
         setIsLoading(true)
 
         const result = await registerUser(name, password, selectedColor)

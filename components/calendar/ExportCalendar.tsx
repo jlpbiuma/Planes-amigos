@@ -4,12 +4,19 @@ import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Download, ExternalLink } from 'lucide-react'
-import { format, parseISO } from 'date-fns'
-import { tc } from '@/lib/translations'
+import { format, parseISO, isAfter, startOfDay } from 'date-fns'
+import { useTranslation } from '@/contexts/LanguageContext'
 import { CalendarEvent, ExportCalendarProps } from '@/types'
 
 export function ExportCalendar({ events }: ExportCalendarProps) {
     const [showExportDialog, setShowExportDialog] = useState(false)
+    const { t } = useTranslation()
+
+    // Filter events to only show future events (today and future)
+    const now = startOfDay(new Date())
+    const futureEvents = events.filter(event =>
+        isAfter(parseISO(event.date), now) || parseISO(event.date).toDateString() === now.toDateString()
+    )
 
     const generateGoogleCalendarUrl = (event: CalendarEvent) => {
         const startDate = format(parseISO(event.date), 'yyyyMMdd')
@@ -37,10 +44,10 @@ export function ExportCalendar({ events }: ExportCalendarProps) {
                     variant="outline"
                     className="w-full flex items-center justify-center space-x-2"
                     onClick={() => setShowExportDialog(true)}
-                    disabled={events.length === 0}
+                    disabled={futureEvents.length === 0}
                 >
                     <Download className="h-4 w-4" />
-                    <span>{tc('exportToGoogleCalendar')}</span>
+                    <span>{t('exportToGoogleCalendar')}</span>
                 </Button>
             </div>
 
@@ -48,20 +55,20 @@ export function ExportCalendar({ events }: ExportCalendarProps) {
             <Dialog open={showExportDialog} onOpenChange={setShowExportDialog}>
                 <DialogContent className="w-[95vw] max-w-md mx-auto">
                     <DialogHeader>
-                        <DialogTitle>{tc('exportCalendar')}</DialogTitle>
+                        <DialogTitle>{t('exportCalendar')}</DialogTitle>
                     </DialogHeader>
                     <div className="space-y-4">
-                        {events.length === 0 ? (
+                        {futureEvents.length === 0 ? (
                             <p className="text-center text-muted-foreground py-4">
-                                {tc('noEventsToExport')}
+                                {t('noEventsToExport')}
                             </p>
                         ) : (
                             <>
                                 <p className="text-sm text-muted-foreground">
-                                    {tc('exportInstructions')}
+                                    {t('exportInstructions')}
                                 </p>
                                 <div className="space-y-2 max-h-60 overflow-y-auto">
-                                    {events.map((event) => (
+                                    {futureEvents.map((event) => (
                                         <div
                                             key={event.id}
                                             className="flex items-center justify-between p-3 border rounded-lg hover:bg-accent cursor-pointer transition-colors"
