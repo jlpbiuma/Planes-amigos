@@ -4,6 +4,7 @@ import "./globals.css";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { LanguageProvider } from "@/contexts/LanguageContext";
+import { Header } from "@/components/layout/Header";
 import { Toaster } from "@/components/ui/toaster";
 
 const geistSans = Geist({
@@ -35,11 +36,12 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen bg-background`}
       >
         <LanguageProvider>
           <ThemeProvider>
             <AuthProvider>
+              <Header />
               {children}
               <Toaster />
             </AuthProvider>

@@ -1,9 +1,9 @@
 "use client"
 
 import { useState, useEffect } from 'react'
-import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, isToday, parseISO } from 'date-fns'
+import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameDay, isToday, parseISO, startOfWeek, endOfWeek, addDays, subDays } from 'date-fns'
 import { es } from 'date-fns/locale'
-import { ChevronLeft, ChevronRight, Plus, Users } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Plus, Users, Download, ExternalLink } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
@@ -46,10 +46,18 @@ export function Calendar({ events, onEventCreate, onEventJoin, currentUserId }: 
     const [selectedEvent, setSelectedEvent] = useState<Event | null>(null)
     const [showCreateEvent, setShowCreateEvent] = useState(false)
     const [selectedDate, setSelectedDate] = useState<string>('')
+    const [showExportDialog, setShowExportDialog] = useState(false)
 
     const monthStart = startOfMonth(currentDate)
     const monthEnd = endOfMonth(currentDate)
-    const monthDays = eachDayOfInterval({ start: monthStart, end: monthEnd })
+
+    // Get the start and end of the calendar grid (including padding days)
+    // Start from Monday (weekStartsOn: 1) to match the Spanish locale and translations
+    const calendarStart = startOfWeek(monthStart, { weekStartsOn: 1 })
+    const calendarEnd = endOfWeek(monthEnd, { weekStartsOn: 1 })
+
+    // Get all days to display in the calendar grid
+    const calendarDays = eachDayOfInterval({ start: calendarStart, end: calendarEnd })
 
     const nextMonth = () => {
         setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1))
@@ -73,6 +81,24 @@ export function Calendar({ events, onEventCreate, onEventJoin, currentUserId }: 
 
     const handleEventClick = (event: Event) => {
         setSelectedEvent(event)
+    }
+
+    const generateGoogleCalendarUrl = (event: Event) => {
+        const startDate = format(parseISO(event.date), 'yyyyMMdd')
+        const endDate = format(parseISO(event.date), 'yyyyMMdd')
+
+        const googleCalendarUrl = new URL('https://calendar.google.com/calendar/render')
+        googleCalendarUrl.searchParams.set('action', 'TEMPLATE')
+        googleCalendarUrl.searchParams.set('text', event.title)
+        googleCalendarUrl.searchParams.set('dates', `${startDate}/${endDate}`)
+        googleCalendarUrl.searchParams.set('details', `Participants: ${event.participants.map(p => p.name).join(', ')}`)
+
+        return googleCalendarUrl.toString()
+    }
+
+    const handleExportToGoogleCalendar = (event: Event) => {
+        const url = generateGoogleCalendarUrl(event)
+        window.open(url, '_blank')
     }
 
     return (
@@ -100,15 +126,21 @@ export function Calendar({ events, onEventCreate, onEventJoin, currentUserId }: 
                 ))}
 
                 {/* Calendar days */}
-                {monthDays.map((day) => {
+                {calendarDays.map((day) => {
                     const dayEvents = getEventsForDay(day)
                     const dayString = format(day, 'yyyy-MM-dd')
+                    const isCurrentMonth = day >= monthStart && day <= monthEnd
+                    const isOtherMonth = !isCurrentMonth
 
                     return (
                         <div key={day.toString()} className="relative min-h-16">
                             <Button
                                 variant={isToday(day) ? "default" : "ghost"}
-                                className={`w-full h-full p-1 flex flex-col items-center justify-start ${isToday(day) ? '' : 'hover:bg-accent'
+                                className={`w-full h-full p-1 flex flex-col items-center justify-start ${isToday(day)
+                                    ? ''
+                                    : isOtherMonth
+                                        ? 'text-muted-foreground/50 hover:bg-accent/50'
+                                        : 'hover:bg-accent'
                                     }`}
                                 onClick={() => handleCreateEvent(dayString)}
                             >
@@ -185,6 +217,61 @@ export function Calendar({ events, onEventCreate, onEventJoin, currentUserId }: 
                     </div>
                 )}
             </div>
+
+            {/* Export to Google Calendar Button */}
+            <div className="px-2 mt-6">
+                <Button
+                    variant="outline"
+                    className="w-full flex items-center justify-center space-x-2"
+                    onClick={() => setShowExportDialog(true)}
+                    disabled={events.length === 0}
+                >
+                    <Download className="h-4 w-4" />
+                    <span>{tc('exportToGoogleCalendar')}</span>
+                </Button>
+            </div>
+
+            {/* Export Dialog */}
+            <Dialog open={showExportDialog} onOpenChange={setShowExportDialog}>
+                <DialogContent className="max-w-sm sm:max-w-lg">
+                    <DialogHeader>
+                        <DialogTitle>{tc('exportCalendar')}</DialogTitle>
+                    </DialogHeader>
+                    <div className="space-y-4">
+                        {events.length === 0 ? (
+                            <p className="text-center text-muted-foreground py-4">
+                                {tc('noEventsToExport')}
+                            </p>
+                        ) : (
+                            <>
+                                <p className="text-sm text-muted-foreground">
+                                    {tc('exportInstructions')}
+                                </p>
+                                <div className="space-y-2 max-h-60 overflow-y-auto">
+                                    {events.map((event) => (
+                                        <div
+                                            key={event.id}
+                                            className="flex items-center justify-between p-3 border rounded-lg hover:bg-accent cursor-pointer transition-colors"
+                                            onClick={() => handleExportToGoogleCalendar(event)}
+                                        >
+                                            <div className="flex items-center space-x-3">
+                                                <div className={`w-3 h-3 rounded-full ${event.color}`} />
+                                                <div>
+                                                    <h4 className="font-medium text-sm">{event.title}</h4>
+                                                    <p className="text-xs text-muted-foreground">
+                                                        {format(parseISO(event.date), 'MMM d, yyyy')}
+                                                    </p>
+                                                </div>
+                                            </div>
+                                            <ExternalLink className="h-4 w-4 text-muted-foreground" />
+                                        </div>
+                                    ))}
+                                </div>
+                            </>
+                        )}
+                    </div>
+                </DialogContent>
+            </Dialog>
 
             {/* Create Event Dialog */}
             <Dialog open={showCreateEvent} onOpenChange={setShowCreateEvent}>
