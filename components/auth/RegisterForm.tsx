@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { ColorPicker } from '@/components/ui/color-picker'
+import { BackgroundVideo } from '@/components/ui/background-video'
 import { registerUser } from '@/lib/auth'
 import { useAuth } from '@/contexts/AuthContext'
 import { useToast } from '@/hooks/use-toast'
@@ -67,73 +68,81 @@ export function RegisterForm({ onToggleForm }: RegisterFormProps) {
     }
 
     return (
-        <Card className="w-full max-w-md mx-auto">
-            <CardHeader>
-                <CardTitle>{t('signUp')}</CardTitle>
-                <CardDescription>
-                    {t('createAccountDescription')}
-                </CardDescription>
-            </CardHeader>
-            <CardContent>
-                <form onSubmit={handleSubmit} className="space-y-4">
-                    <div className="space-y-2">
-                        <label htmlFor="register-name" className="text-sm font-medium">
-                            {t('name')}
-                        </label>
-                        <Input
-                            id="register-name"
-                            type="text"
-                            placeholder={t('enterName')}
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                            required
+        <div className="relative w-full max-w-md mx-auto">
+            <BackgroundVideo />
+
+            {/* Registration Form */}
+            <Card className="relative z-10 bg-white/50 backdrop-blur-sm shadow-xl">
+                <CardHeader>
+                    <CardTitle className="text-black">{t('signUp')}</CardTitle>
+                    <CardDescription className="text-gray-600">
+                        {t('createAccountDescription')}
+                    </CardDescription>
+                </CardHeader>
+                <CardContent>
+                    <form onSubmit={handleSubmit} className="space-y-4">
+                        <div className="space-y-2">
+                            <label htmlFor="register-name" className="text-sm font-medium text-black">
+                                {t('name')}
+                            </label>
+                            <Input
+                                id="register-name"
+                                type="text"
+                                placeholder={t('enterName')}
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                                required
+                                className="bg-white/95 border-gray-200"
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <label htmlFor="register-password" className="text-sm font-medium text-black">
+                                {t('password')}
+                            </label>
+                            <Input
+                                id="register-password"
+                                type="password"
+                                placeholder={t('enterPassword')}
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                required
+                                className="bg-white/95 border-gray-200"
+                            />
+                        </div>
+                        <div className="space-y-2">
+                            <label htmlFor="confirm-password" className="text-sm font-medium text-black">
+                                {t('confirmPassword')}
+                            </label>
+                            <Input
+                                id="confirm-password"
+                                type="password"
+                                placeholder={t('confirmYourPassword')}
+                                value={confirmPassword}
+                                onChange={(e) => setConfirmPassword(e.target.value)}
+                                required
+                                className="bg-white/95 border-gray-200"
+                            />
+                        </div>
+                        <ColorPicker
+                            selectedColor={selectedColor}
+                            onColorChange={setSelectedColor}
+                            label={t('selectColor')}
                         />
+                        <Button type="submit" className="w-full" disabled={isLoading}>
+                            {isLoading ? t('creatingAccount') : t('signUp')}
+                        </Button>
+                    </form>
+                    <div className="mt-4 text-center">
+                        <button
+                            type="button"
+                            onClick={onToggleForm}
+                            className="text-sm hover:underline text-black"
+                        >
+                            {t('alreadyHaveAccount')}
+                        </button>
                     </div>
-                    <div className="space-y-2">
-                        <label htmlFor="register-password" className="text-sm font-medium">
-                            {t('password')}
-                        </label>
-                        <Input
-                            id="register-password"
-                            type="password"
-                            placeholder={t('enterPassword')}
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
-                        />
-                    </div>
-                    <div className="space-y-2">
-                        <label htmlFor="confirm-password" className="text-sm font-medium">
-                            {t('confirmPassword')}
-                        </label>
-                        <Input
-                            id="confirm-password"
-                            type="password"
-                            placeholder={t('confirmYourPassword')}
-                            value={confirmPassword}
-                            onChange={(e) => setConfirmPassword(e.target.value)}
-                            required
-                        />
-                    </div>
-                    <ColorPicker
-                        selectedColor={selectedColor}
-                        onColorChange={setSelectedColor}
-                        label={t('selectColor')}
-                    />
-                    <Button type="submit" className="w-full" disabled={isLoading}>
-                        {isLoading ? t('creatingAccount') : t('signUp')}
-                    </Button>
-                </form>
-                <div className="mt-4 text-center">
-                    <button
-                        type="button"
-                        onClick={onToggleForm}
-                        className="text-sm text-primary hover:underline"
-                    >
-                        {t('alreadyHaveAccount')}
-                    </button>
-                </div>
-            </CardContent>
-        </Card>
+                </CardContent>
+            </Card>
+        </div>
     )
 }

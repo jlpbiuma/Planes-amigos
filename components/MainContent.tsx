@@ -127,11 +127,11 @@ export function MainContent() {
 
     if (!user) {
         return (
-            <main className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-blue-50 to-purple-50">
+            <main className="min-h-screen flex items-center justify-center p-4">
                 <div className="w-full max-w-sm mx-auto">
                     <div className="text-center mb-8">
-                        <h1 className="text-2xl sm:text-3xl font-bold text-foreground mb-2">{t('appName')}</h1>
-                        <p className="text-muted-foreground text-sm">{t('appDescription')}</p>
+                        <h1 className="text-2xl sm:text-3xl font-bold mb-2 text-white">{t('appName')}</h1>
+                        <p className="text-white text-sm">{t('appDescription')}</p>
                     </div>
 
                     {showLogin ? (
