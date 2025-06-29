@@ -1,12 +1,13 @@
 "use client"
 
 import React, { createContext, useContext, useState, useEffect } from 'react'
-import { Language, setCurrentLanguage } from '@/lib/translations'
+import { Language, setCurrentLanguage, t } from '@/lib/translations'
 
 interface LanguageContextType {
     language: Language
     setLanguage: (language: Language) => void
     toggleLanguage: () => void
+    t: (key: string) => any
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined)
@@ -20,8 +21,12 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
         if (storedLanguage && (storedLanguage === 'es' || storedLanguage === 'en')) {
             setLanguage(storedLanguage)
             setCurrentLanguage(storedLanguage)
+            // Update HTML lang attribute for stored preference
+            document.documentElement.lang = storedLanguage
         } else {
             setCurrentLanguage('es')
+            // Update HTML lang attribute for default language
+            document.documentElement.lang = 'es'
         }
     }, [])
 
@@ -39,8 +44,13 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
         handleSetLanguage(newLanguage)
     }
 
+    // Reactive translation function that will cause re-renders
+    const translate = (key: string) => {
+        return t(key, language)
+    }
+
     return (
-        <LanguageContext.Provider value={{ language, setLanguage: handleSetLanguage, toggleLanguage }}>
+        <LanguageContext.Provider value={{ language, setLanguage: handleSetLanguage, toggleLanguage, t: translate }}>
             {children}
         </LanguageContext.Provider>
     )
@@ -52,4 +62,10 @@ export function useLanguage() {
         throw new Error('useLanguage must be used within a LanguageProvider')
     }
     return context
+}
+
+// Custom hook for just translations (components can use this instead of tc)
+export function useTranslation() {
+    const { t } = useLanguage()
+    return { t }
 } 

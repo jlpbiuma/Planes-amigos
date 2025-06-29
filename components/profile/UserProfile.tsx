@@ -8,14 +8,8 @@ import { ColorPicker } from '@/components/ui/color-picker'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { updateUserProfile, updateUserPassword } from '@/lib/auth'
 import { useAuth } from '@/contexts/AuthContext'
+import { useToast } from '@/hooks/use-toast'
 import { tc } from '@/lib/translations'
-
-// Simple toast implementation for now
-const useToast = () => ({
-    toast: ({ title, description, variant }: { title: string; description: string; variant?: string }) => {
-        console.log(`${variant === 'destructive' ? '❌' : '✅'} ${title}: ${description}`)
-    }
-})
 
 interface UserProfileProps {
     isOpen: boolean
@@ -117,7 +111,7 @@ export function UserProfile({ isOpen, onClose }: UserProfileProps) {
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContent className="max-w-md">
+            <DialogContent className="w-[95vw] max-w-md mx-auto">
                 <DialogHeader>
                     <DialogTitle>{tc('profile')}</DialogTitle>
                 </DialogHeader>

@@ -5,14 +5,8 @@ import { Button } from '@/components/ui/button'
 import { Users, Share2, Calendar } from 'lucide-react'
 import { format, parseISO } from 'date-fns'
 import { es } from 'date-fns/locale'
-import { Event } from './Calendar'
 import { tc } from '@/lib/translations'
-
-interface EventDetailsProps {
-    event: Event
-    onJoin: () => void
-    currentUserId: string
-}
+import { CalendarEvent, EventDetailsProps } from '@/types'
 
 export function EventDetails({ event, onJoin, currentUserId }: EventDetailsProps) {
     const [isJoining, setIsJoining] = useState(false)

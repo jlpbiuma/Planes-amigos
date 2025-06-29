@@ -7,17 +7,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { Calendar, Users, ArrowRight } from 'lucide-react'
 import { getEventWithParticipants, joinEvent } from '@/lib/events'
-import { Event } from '@/components/calendar/Calendar'
+import { CalendarEvent } from '@/types'
 import { format, parseISO } from 'date-fns'
 import { es } from 'date-fns/locale'
+import { useToast } from '@/hooks/use-toast'
 import { tc } from '@/lib/translations'
-
-// Simple toast implementation for now
-const useToast = () => ({
-    toast: ({ title, description, variant }: { title: string; description: string; variant?: string }) => {
-        console.log(`${variant === 'destructive' ? '❌' : '✅'} ${title}: ${description}`)
-    }
-})
 
 interface InvitePageProps {
     params: Promise<{
@@ -30,7 +24,7 @@ export default function InvitePage({ params }: InvitePageProps) {
     const { user, isLoading: authLoading } = useAuth()
     const router = useRouter()
     const { toast } = useToast()
-    const [event, setEvent] = useState<Event | null>(null)
+    const [event, setEvent] = useState<CalendarEvent | null>(null)
     const [isLoading, setIsLoading] = useState(true)
     const [isJoining, setIsJoining] = useState(false)
 

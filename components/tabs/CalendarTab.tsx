@@ -1,15 +1,9 @@
 "use client"
 
-import { Calendar, Event } from '@/components/calendar/Calendar'
+import { Calendar } from '@/components/calendar/Calendar'
+import { CalendarProps } from '@/types'
 
-interface CalendarTabProps {
-    events: Event[]
-    onEventCreate: (title: string, date: string) => void
-    onEventJoin: (eventId: string) => void
-    currentUserId: string
-}
-
-export function CalendarTab({ events, onEventCreate, onEventJoin, currentUserId }: CalendarTabProps) {
+export function CalendarTab({ events, onEventCreate, onEventJoin, currentUserId }: CalendarProps) {
     return (
         <Calendar
             events={events}

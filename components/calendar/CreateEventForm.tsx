@@ -6,12 +6,7 @@ import { Input } from '@/components/ui/input'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
 import { tc } from '@/lib/translations'
-
-interface CreateEventFormProps {
-    selectedDate: string
-    onEventCreate: (title: string, date: string) => void
-    onCancel: () => void
-}
+import { CreateEventFormProps } from '@/types'
 
 export function CreateEventForm({ selectedDate, onEventCreate, onCancel }: CreateEventFormProps) {
     const [title, setTitle] = useState('')

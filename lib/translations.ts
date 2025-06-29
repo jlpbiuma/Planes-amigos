@@ -98,9 +98,14 @@ export const translations = {
     passwordsIdentical: "Please make sure both passwords are identical.",
     passwordTooShort: "Password too short",
     passwordMinLength: "Password must be at least 6 characters long.",
+    passwordNotSecure: "Password is not secure",
+    passwordSecurityRequirements: "Password must contain at least 8 characters, including uppercase, lowercase, and a number.",
     userAlreadyExists: "User already exists",
+    userAlreadyExistsDesc: "Please choose a different username or try logging in instead.",
     invalidCredentials: "Invalid credentials",
     alreadyJoinedEvent: "You're already joined to this event",
+    oneEventPerDay: "You can only create one event per day",
+    oneEventPerDayDesc: "You already have an event on this date. Try selecting a different date.",
     
     // Errors
     eventNotFound: "Event Not Found",
@@ -233,9 +238,14 @@ export const translations = {
     passwordsIdentical: "Por favor asegúrate de que ambas contraseñas sean idénticas.",
     passwordTooShort: "Contraseña muy corta",
     passwordMinLength: "La contraseña debe tener al menos 6 caracteres.",
+    passwordNotSecure: "La contraseña no es segura",
+    passwordSecurityRequirements: "La contraseña debe contener al menos 8 caracteres, incluyendo mayúsculas, minúsculas y un número.",
     userAlreadyExists: "El usuario ya existe",
+    userAlreadyExistsDesc: "Por favor elige un nombre de usuario diferente o intenta iniciar sesión.",
     invalidCredentials: "Credenciales inválidas",
     alreadyJoinedEvent: "Ya estás unido a este evento",
+    oneEventPerDay: "Solo puedes crear un evento por día",
+    oneEventPerDayDesc: "Ya tienes un evento en esta fecha. Intenta seleccionar una fecha diferente.",
     
     // Errors
     eventNotFound: "Evento No Encontrado",
@@ -296,7 +306,7 @@ export function getCurrentLanguage(): Language {
   return currentLanguage
 }
 
-// Context-aware translation function
+// Context-aware translation function (deprecated - use useTranslation hook instead)
 export function tc(key: string): any {
   return t(key, currentLanguage)
 } 

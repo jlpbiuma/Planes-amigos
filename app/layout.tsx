@@ -20,12 +20,13 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Planes Amigos - Connect with Friends",
   description: "Create and join hangouts with your friends",
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-    maximumScale: 1,
-    userScalable: false,
-  },
+};
+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 };
 
 export default function RootLayout({
@@ -34,7 +35,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es">
+    <html suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen bg-background`}
       >

@@ -1,5 +1,5 @@
 import { supabase } from './supabase'
-import { Event } from '@/components/calendar/Calendar'
+import { CalendarEvent as Event } from '@/types'
 
 export interface CreateEventData {
   title: string
@@ -21,6 +21,21 @@ const eventColors = [
 
 export async function createEvent(data: CreateEventData): Promise<{ success: boolean; event?: Event; error?: string }> {
   try {
+    // Check if user already has an event on this date
+    const { data: existingEvents, error: checkError } = await supabase
+      .from('events')
+      .select('id')
+      .eq('creator_id', data.creator_id)
+      .eq('date', data.date)
+
+    if (checkError) {
+      console.error('Error checking existing events:', checkError)
+    }
+
+    if (existingEvents && existingEvents.length > 0) {
+      return { success: false, error: 'oneEventPerDay' }
+    }
+
     // Assign random color if not provided
     const color = data.color || eventColors[Math.floor(Math.random() * eventColors.length)]
     

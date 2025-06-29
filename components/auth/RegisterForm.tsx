@@ -7,14 +7,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { ColorPicker } from '@/components/ui/color-picker'
 import { registerUser } from '@/lib/auth'
 import { useAuth } from '@/contexts/AuthContext'
-import { tc } from '@/lib/translations'
-
-// Simple toast implementation for now
-const useToast = () => ({
-    toast: ({ title, description, variant }: { title: string; description: string; variant?: string }) => {
-        console.log(`${variant === 'destructive' ? '❌' : '✅'} ${title}: ${description}`)
-    }
-})
+import { useToast } from '@/hooks/use-toast'
+import { useTranslation } from '@/contexts/LanguageContext'
 
 interface RegisterFormProps {
     onToggleForm: () => void
@@ -28,14 +22,15 @@ export function RegisterForm({ onToggleForm }: RegisterFormProps) {
     const [isLoading, setIsLoading] = useState(false)
     const { login } = useAuth()
     const { toast } = useToast()
+    const { t } = useTranslation()
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
 
         if (password !== confirmPassword) {
             toast({
-                title: tc('passwordsDontMatch'),
-                description: tc('passwordsIdentical'),
+                title: t('passwordsDontMatch'),
+                description: t('passwordsIdentical'),
                 variant: "destructive",
             })
             return
@@ -43,8 +38,22 @@ export function RegisterForm({ onToggleForm }: RegisterFormProps) {
 
         if (password.length < 6) {
             toast({
-                title: tc('passwordTooShort'),
-                description: tc('passwordMinLength'),
+                title: t('passwordTooShort'),
+                description: t('passwordMinLength'),
+                variant: "destructive",
+            })
+            return
+        }
+
+        // Check for basic password security (uppercase, lowercase, number)
+        const hasUpperCase = /[A-Z]/.test(password)
+        const hasLowerCase = /[a-z]/.test(password)
+        const hasNumbers = /\d/.test(password)
+
+        if (!hasUpperCase || !hasLowerCase || !hasNumbers || password.length < 8) {
+            toast({
+                title: t('passwordNotSecure'),
+                description: t('passwordSecurityRequirements'),
                 variant: "destructive",
             })
             return
@@ -57,15 +66,24 @@ export function RegisterForm({ onToggleForm }: RegisterFormProps) {
         if (result.success && result.user) {
             login(result.user)
             toast({
-                title: tc('registrationSuccessful'),
-                description: `${tc('welcomeToApp')}, ${result.user.name}!`,
+                title: t('registrationSuccessful'),
+                description: `${t('welcomeToApp')}, ${result.user.name}!`,
             })
         } else {
-            toast({
-                title: tc('registrationFailed'),
-                description: result.error || tc('somethingWentWrong'),
-                variant: "destructive",
-            })
+            // Handle specific error cases
+            if (result.error === 'User already exists') {
+                toast({
+                    title: t('userAlreadyExists'),
+                    description: t('userAlreadyExistsDesc'),
+                    variant: "destructive",
+                })
+            } else {
+                toast({
+                    title: t('registrationFailed'),
+                    description: result.error || t('somethingWentWrong'),
+                    variant: "destructive",
+                })
+            }
         }
 
         setIsLoading(false)
@@ -74,21 +92,21 @@ export function RegisterForm({ onToggleForm }: RegisterFormProps) {
     return (
         <Card className="w-full max-w-md mx-auto">
             <CardHeader>
-                <CardTitle>{tc('signUp')}</CardTitle>
+                <CardTitle>{t('signUp')}</CardTitle>
                 <CardDescription>
-                    {tc('createAccountDescription')}
+                    {t('createAccountDescription')}
                 </CardDescription>
             </CardHeader>
             <CardContent>
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div className="space-y-2">
                         <label htmlFor="register-name" className="text-sm font-medium">
-                            {tc('name')}
+                            {t('name')}
                         </label>
                         <Input
                             id="register-name"
                             type="text"
-                            placeholder={tc('enterName')}
+                            placeholder={t('enterName')}
                             value={name}
                             onChange={(e) => setName(e.target.value)}
                             required
@@ -96,12 +114,12 @@ export function RegisterForm({ onToggleForm }: RegisterFormProps) {
                     </div>
                     <div className="space-y-2">
                         <label htmlFor="register-password" className="text-sm font-medium">
-                            {tc('password')}
+                            {t('password')}
                         </label>
                         <Input
                             id="register-password"
                             type="password"
-                            placeholder={tc('enterPassword')}
+                            placeholder={t('enterPassword')}
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             required
@@ -109,12 +127,12 @@ export function RegisterForm({ onToggleForm }: RegisterFormProps) {
                     </div>
                     <div className="space-y-2">
                         <label htmlFor="confirm-password" className="text-sm font-medium">
-                            {tc('confirmPassword')}
+                            {t('confirmPassword')}
                         </label>
                         <Input
                             id="confirm-password"
                             type="password"
-                            placeholder={tc('confirmYourPassword')}
+                            placeholder={t('confirmYourPassword')}
                             value={confirmPassword}
                             onChange={(e) => setConfirmPassword(e.target.value)}
                             required
@@ -123,10 +141,10 @@ export function RegisterForm({ onToggleForm }: RegisterFormProps) {
                     <ColorPicker
                         selectedColor={selectedColor}
                         onColorChange={setSelectedColor}
-                        label={tc('selectColor')}
+                        label={t('selectColor')}
                     />
                     <Button type="submit" className="w-full" disabled={isLoading}>
-                        {isLoading ? tc('creatingAccount') : tc('signUp')}
+                        {isLoading ? t('creatingAccount') : t('signUp')}
                     </Button>
                 </form>
                 <div className="mt-4 text-center">
@@ -135,7 +153,7 @@ export function RegisterForm({ onToggleForm }: RegisterFormProps) {
                         onClick={onToggleForm}
                         className="text-sm text-primary hover:underline"
                     >
-                        {tc('alreadyHaveAccount')}
+                        {t('alreadyHaveAccount')}
                     </button>
                 </div>
             </CardContent>
